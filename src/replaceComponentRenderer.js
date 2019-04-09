@@ -2,6 +2,7 @@ import _ from 'lodash'
 import React from 'react'
 import Modal from 'react-modal'
 import ModalRoutingContext from './ModalRoutingContext'
+import { navigate } from "gatsby";
 
 class ReplaceComponentRenderer extends React.Component {
   state = {
@@ -11,7 +12,9 @@ class ReplaceComponentRenderer extends React.Component {
   }
 
   constructor(...args) {
-    super(...args)
+    super(...args);
+
+    this.closeModal = this.closeModal.bind(this);
   }
 
   static getDerivedStateFromProps(props, state) {
@@ -26,6 +29,15 @@ class ReplaceComponentRenderer extends React.Component {
         })
       }
     }
+  }
+
+  closeModal() {
+    const { prevProps } = this.state;
+    navigate(prevProps.location.pathname, {
+      state: {
+        noScroll: true
+      }
+    });
   }
 
   render() {
@@ -61,6 +73,7 @@ class ReplaceComponentRenderer extends React.Component {
         <Modal
           {...modalProps}
           isOpen={!!modalElement}
+          onRequestClose={this.closeModal}
         >
           {modalElement ? (
             <React.Fragment
